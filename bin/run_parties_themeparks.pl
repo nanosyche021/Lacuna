@@ -55,6 +55,7 @@ use Exception::Class;
   $topok = eval {  
     for $pname (sort keys %planets) {
       print "Inspecting $pname\n";
+      my $firstthemepark;
       my $planet    = $glc->body(id => $planets{$pname});
       my $result    = $planet->get_buildings;
       my $buildings = $result->{buildings};
@@ -72,9 +73,15 @@ use Exception::Class;
         if ($bld->{name} eq "Theme Park") {
           my $result;
           for ( 1 .. $themecount ) {
+            if (!$firstthemepark) {
+              $firstthemepark = $bldpnt;
+              last;
+            }
             $ok = eval {
+              $result = $firstthemepark->operate->{themepark}; 
+              print "Operated Theme Park 1\n";
               $result = $bldpnt->operate->{themepark}; 
-              print "Operated Theme Park\n";
+              print "Operated Theme Park 2\n";
             };
             unless ($ok) {
               if ( $@ =~ "Slow down" ) {
